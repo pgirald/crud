@@ -7,6 +7,18 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [editMode,setEditMode]=useState(false);
   const [id,setId]=useState("");
+  const [error,setError]=useState(null);
+
+  function validForm()
+  {
+    setError("Especifique el nombre de la tarea");
+    if(isEmpty(task))
+    {
+      return false;
+    }
+    setError("");
+    return true;
+  }
 
   function onTextChangedhandler(text)
   {
@@ -16,9 +28,8 @@ function App() {
   function addTask(e)
   {
     e.preventDefault();
-    if(isEmpty(task))
+    if(!validForm())
     {
-      console.log("Task empty");
       return;
     }
     const newTask={
@@ -45,9 +56,8 @@ function App() {
   function saveTaskChanges(e)
   {
     e.preventDefault();
-    if(isEmpty(task))
+    if(!validForm())
     {
-      console.log("Task empty");
       return;
     }
     setEditMode(false);
@@ -64,8 +74,8 @@ function App() {
       <div className="col-8">
         <h4 className="text-center">Lista de tareas</h4>
         {
-          (size(tasks)===0)?(<h5 className="text-center">Aun no hay tareas programadas</h5>):(
-          <ul className="list-groud">
+          (size(tasks)===0)?(<h5 className="list-group-item">Aun no hay tareas programadas</h5>):(
+          <ul className="list-group">
             {
               tasks.map(task=>(
               <li className="list-group-item" key={task.id}>
@@ -81,7 +91,10 @@ function App() {
       <div className="col-4">
         <h4 className="text-center">Nombre de la tarea</h4>
         <form onSubmit={editMode?saveTaskChanges:addTask}>
-          <input type="text" className="form-control mb-2" placeholder="ingrese la tarea:"
+          {
+            error && <span className="text-danger">{error}</span>
+          }
+          <input type="text" className="form-control mb-2" placeholder="Nombre"
           onChange={onTextChangedhandler} value={task}/>
           <button type="submit" className="btn btn-dark btn-block">
             {editMode?"Modificar":"Agregar"}
