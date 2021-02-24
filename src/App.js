@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import {isEmpty,size} from 'lodash';
-import { addDocument, getCollection } from './actions';
+import { addDocument, deleteDocument, getCollection, updateDocument } from './actions';
 
 function App() {
   const [task, setTask] = useState("");
@@ -49,9 +49,13 @@ function App() {
     setTask("");
   }
 
-  function removeTask(id)
+  async function removeTask(id)
   {
-    console.log(id);
+    const result=await deleteDocument("tasks",id);
+    if(!result.statusResponse){
+      setError(result.error);
+      return;
+    }
     const newTasks=tasks.filter(task=>task.id!==id);
     setTasks(newTasks);
   }
@@ -63,11 +67,16 @@ function App() {
     setId(theTask.id);
   }
 
-  function saveTaskChanges(e)
+  async function saveTaskChanges(e)
   {
     e.preventDefault();
     if(!validForm())
     {
+      return;
+    }
+    const result=await updateDocument("tasks",id,{name:task});
+    if(!result.statusResponse){
+      setError(result.error);
       return;
     }
     setEditMode(false);

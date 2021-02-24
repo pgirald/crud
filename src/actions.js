@@ -32,3 +32,25 @@ export const addDocument=async function(collection,data){
     }
     return result;
 }
+
+export const updateDocument=async function(collection,id,data){
+    const result={statusResponse:false,data:null,error:null};
+    try {
+        await db.collection(collection).doc(id).update(data);
+        result.statusResponse=true;
+    } catch (error) {
+        result.error=error;
+    }
+    return result;
+}
+
+export const deleteDocument=async function(collection,id){
+    const result={statusResponse:false,error:null};
+    try {
+        await db.collection(collection).doc(id).delete();
+        result.statusResponse=true;
+    } catch (error) {
+        result.error=error;
+    }
+    return result;
+}
